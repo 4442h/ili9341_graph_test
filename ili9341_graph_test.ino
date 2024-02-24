@@ -38,14 +38,25 @@ void addValuetoBuffer(float value)
   bufMax = *std::max_element(buffer.begin(), buffer.end());
 }
 
+float factor(float diff, int height)
+{
+  if (diff < height) {
+    return ((float)height / diff);
+  } else {
+    return (diff / (float)height);
+  }
+}
+
 void drawDiagram(bool forceUpdate = false)
 {
   int base = (GRAPH_Y+GRAPH_H-2), xpos = GRAPH_X+2;
+  int tDiff = (bufMax - bufMin);
+  float fact = factor(tDiff, GRAPH_H-4);
+
   //update all value
   if ( forceUpdate ) {
-    tft.drawRect(GRAPH_X, GRAPH_Y, GRAPH_L-1, GRAPH_H, ILI9341_BLACK);
+    tft.drawRect(GRAPH_X, GRAPH_Y, GRAPH_L, GRAPH_H, ILI9341_BLACK);
     tft.fillRect(GRAPH_X+1, GRAPH_Y+1, GRAPH_L-2, GRAPH_H-2, ILI9341_LIGHTGREY);
-    int tDiff = (bufMax - bufMin);
     tft.setTextSize(1);
     tft.setTextColor(ILI9341_BLACK);
     tft.setCursor(GRAPH_L-15, GRAPH_Y+2);
@@ -53,8 +64,9 @@ void drawDiagram(bool forceUpdate = false)
     tft.setCursor(GRAPH_L-15, (GRAPH_Y+GRAPH_H-10));
     tft.print(bufMin);
 
+
     for (float n : buffer) {
-      int ypos = base - (n - bufMin);
+      int ypos = base - ((n - bufMin)*fact);
       //Serial.println((String)"x(" + xpos + ")y(" + ypos + ")t(" + n + ")");
       tft.drawPixel(xpos, ypos, ILI9341_RED);
       xpos++;
@@ -85,7 +97,7 @@ void setup() {
 void loop() {
   static int updateInterval = 0;
   if (updateInterval % UPDATE_VALUE_INTERVAL == 0) {
-    addValuetoBuffer((float)random(-10, 30));
+    addValuetoBuffer((float)random(-2, 8));
   }
   if (updateInterval % UPDATE_DIAGRAM_INTERVAL == 0) {
     drawDiagram(true);
