@@ -7,6 +7,11 @@
 #define UPDATE_VALUE_INTERVAL 50
 #define UPDATE_DIAGRAM_INTERVAL 200
 
+#define GRAPH_X 1
+#define GRAPH_Y 1
+#define GRAPH_H 50
+#define GRAPH_L 239
+
 #define TFT_BL   21
 #define TFT_CS   15 
 #define TFT_DC    2
@@ -26,7 +31,7 @@ long randomNumber = 0;
 
 void addValuetoBuffer(float value)
 {
-  if (buffer.size() == 200)
+  if (buffer.size() == (GRAPH_L-5))
     buffer.erase(buffer.begin());
   buffer.push_back(value);
   bufMin = *std::min_element(buffer.begin(), buffer.end());
@@ -35,15 +40,15 @@ void addValuetoBuffer(float value)
 
 void drawDiagram(bool forceUpdate = false)
 {
-  int origin = 38, xpos = 3;
+  int base = (GRAPH_Y+GRAPH_H-2), xpos = GRAPH_X+2;
   //update all value
   if ( forceUpdate ) {
-    tft.drawRect(1, 1, 239, 50, ILI9341_RED);
-    tft.fillRect(2, 2, 237, 48, ILI9341_LIGHTGREY);
+    tft.drawRect(GRAPH_X, GRAPH_Y, GRAPH_L-1, GRAPH_H, ILI9341_RED);
+    tft.fillRect(GRAPH_X+1, GRAPH_Y+1, GRAPH_L-2, GRAPH_H-2, ILI9341_LIGHTGREY);
     int tDiff = (bufMax - bufMin);
 
     for (float n : buffer) {
-      int ypos = origin - (n - bufMin);
+      int ypos = base - (n - bufMin);
       //Serial.println((String)"x(" + xpos + ")y(" + ypos + ")t(" + n + ")");
       tft.drawPixel(xpos, ypos, ILI9341_RED);
       xpos++;
@@ -74,7 +79,7 @@ void setup() {
 void loop() {
   static int updateInterval = 0;
   if (updateInterval % UPDATE_VALUE_INTERVAL == 0) {
-    addValuetoBuffer((float)random(0, 20));
+    addValuetoBuffer((float)random(-10, 30));
   }
   if (updateInterval % UPDATE_DIAGRAM_INTERVAL == 0) {
     drawDiagram(true);
