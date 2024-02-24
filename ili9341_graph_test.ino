@@ -10,7 +10,7 @@
 #define GRAPH_X 1
 #define GRAPH_Y 1
 #define GRAPH_H 50
-#define GRAPH_L 239
+#define GRAPH_L 238
 
 #define TFT_BL   21
 #define TFT_CS   15 
@@ -31,7 +31,7 @@ long randomNumber = 0;
 
 void addValuetoBuffer(float value)
 {
-  if (buffer.size() == (GRAPH_L-5))
+  if (buffer.size() == (GRAPH_L-10))
     buffer.erase(buffer.begin());
   buffer.push_back(value);
   bufMin = *std::min_element(buffer.begin(), buffer.end());
@@ -43,9 +43,15 @@ void drawDiagram(bool forceUpdate = false)
   int base = (GRAPH_Y+GRAPH_H-2), xpos = GRAPH_X+2;
   //update all value
   if ( forceUpdate ) {
-    tft.drawRect(GRAPH_X, GRAPH_Y, GRAPH_L-1, GRAPH_H, ILI9341_RED);
+    tft.drawRect(GRAPH_X, GRAPH_Y, GRAPH_L-1, GRAPH_H, ILI9341_BLACK);
     tft.fillRect(GRAPH_X+1, GRAPH_Y+1, GRAPH_L-2, GRAPH_H-2, ILI9341_LIGHTGREY);
     int tDiff = (bufMax - bufMin);
+    tft.setTextSize(1);
+    tft.setTextColor(ILI9341_BLACK);
+    tft.setCursor(GRAPH_L-15, GRAPH_Y+2);
+    tft.print(bufMax);
+    tft.setCursor(GRAPH_L-15, (GRAPH_Y+GRAPH_H-10));
+    tft.print(bufMin);
 
     for (float n : buffer) {
       int ypos = base - (n - bufMin);
