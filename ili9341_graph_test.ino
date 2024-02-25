@@ -40,6 +40,8 @@ void addValuetoBuffer(float value)
 
 float factor(float diff, int height)
 {
+  if (diff < 5 && height > 30)
+    return 2.5;
   if (diff < height) {
     return ((float)height / diff);
   } else {
@@ -47,11 +49,20 @@ float factor(float diff, int height)
   }
 }
 
+int baseCorrection(float diff, int height)
+{
+  if (diff < 5 && height > 30)
+    return 10;
+  else if (diff < 5 && height <= 30)
+    return 1;
+}
+
 void drawDiagram(bool forceUpdate = false)
 {
-  int base = (GRAPH_Y+GRAPH_H-2), xpos = GRAPH_X+2;
+  int xpos = GRAPH_X+2;
   int tDiff = (bufMax - bufMin);
   float fact = factor(tDiff, GRAPH_H-4);
+  int base = (GRAPH_Y+GRAPH_H-2) - baseCorrection(tDiff, GRAPH_H);
 
   //update all value
   if ( forceUpdate ) {
@@ -97,7 +108,7 @@ void setup() {
 void loop() {
   static int updateInterval = 0;
   if (updateInterval % UPDATE_VALUE_INTERVAL == 0) {
-    addValuetoBuffer((float)random(-2, 8));
+    addValuetoBuffer((float)random(2, 6));
   }
   if (updateInterval % UPDATE_DIAGRAM_INTERVAL == 0) {
     drawDiagram(true);
