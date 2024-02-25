@@ -55,6 +55,8 @@ int baseCorrection(float diff, int height)
     return 10;
   else if (diff < 5 && height <= 30)
     return 1;
+  else
+    return 0;
 }
 
 void drawDiagram(bool forceUpdate = false)
