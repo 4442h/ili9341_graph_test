@@ -119,6 +119,37 @@ void drawDiagram(uint16_t x, uint16_t y, uint16_t l, uint16_t h, bool forceUpdat
   }
 }
 
+void drawBarChart(uint16_t x, uint16_t y, uint16_t l, uint16_t h, bool forceUpdate = false)
+{
+  int xpos = x+2;
+  int tDiff = (bufMax - bufMin);
+  float fact = factor(tDiff, h-4);
+  int base = (y+h-2) - baseCorrection(tDiff, h);
+
+  //update all value
+  if ( forceUpdate ) {
+    tft.drawRect(x, y, l, h, ILI9341_BLACK);
+    tft.fillRect(x+1, y+1, l-2, h-2, ILI9341_LIGHTGREY);
+    tft.setTextSize(1);
+    tft.setTextColor(ILI9341_BLACK);
+    tft.setCursor(l-15, y+2);
+    tft.print(bufMax);
+    tft.setCursor(l-15, (y+h-10));
+    tft.print(bufMin);
+
+
+    for (float n : buffer) {
+      int ypos = base - ((n - bufMin)*fact);
+      //Serial.println((String)"x(" + xpos + ")y(" + ypos + ")t(" + n + ")");
+      tft.drawLine(xpos, (y+h-2), xpos, ypos, ILI9341_GREEN);
+      tft.drawPixel(xpos, ypos, ILI9341_RED);
+      xpos++;
+    }
+  } else {
+    //todo we want to update just the latest pixel
+  }
+}
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting application...");
@@ -144,6 +175,7 @@ void loop() {
   }
   if (updateInterval % UPDATE_DIAGRAM_INTERVAL == 0) {
     drawDiagram(true);
+    drawBarChart(GRAPH_X, GRAPH_Y+GRAPH_H+10, GRAPH_L, GRAPH_H, true);
   }
   
   updateInterval++;
