@@ -160,10 +160,7 @@ void setup() {
   analogSetAttenuation(ADC_0db);
   pinMode(LDR_PIN, INPUT);
 
-  // initialize SPI:
-  SPI.begin();
-  SPI.setFrequency(16000000);
-  tft.begin();
+  tft.begin(48000000);
 
   randomSeed(analogRead(0));
 }
@@ -171,7 +168,7 @@ void setup() {
 void loop() {
   static int updateInterval = 0;
   if (updateInterval % UPDATE_VALUE_INTERVAL == 0) {
-    addValuetoBuffer((float)random(2, 6));
+    addValuetoBuffer((float)random(2, 26));
   }
   if (updateInterval % UPDATE_DIAGRAM_INTERVAL == 0) {
     drawDiagram(true);
