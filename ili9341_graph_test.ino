@@ -42,11 +42,7 @@ float factor(float diff, int height)
 {
   if (diff < 5 && height > 30)
     return 2.5;
-  if (diff < height) {
-    return ((float)height / diff);
-  } else {
-    return (diff / (float)height);
-  }
+  return ((float)height / diff);
 }
 
 int baseCorrection(float diff, int height)
@@ -160,7 +156,7 @@ void setup() {
   analogSetAttenuation(ADC_0db);
   pinMode(LDR_PIN, INPUT);
 
-  tft.begin(48000000);
+  tft.begin(96000000);
 
   randomSeed(analogRead(0));
 }
@@ -168,7 +164,7 @@ void setup() {
 void loop() {
   static int updateInterval = 0;
   if (updateInterval % UPDATE_VALUE_INTERVAL == 0) {
-    addValuetoBuffer((float)random(2, 26));
+    addValuetoBuffer((float)random(46, 827));
   }
   if (updateInterval % UPDATE_DIAGRAM_INTERVAL == 0) {
     drawDiagram(true);
